@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dubins Curve WebAssembly</title>
+    <style>
+    body{
+        margin:40px auto;
+        max-width:650px;
+        line-height:1.6;
+        font-size:18px;
+        color:#444;
+        padding:0 10px;
+    }
+    h1,h2,h3 { line-height:1.2; }
+    hr { border-bottom: 0; }
+
+    #mycanvas {
+        width: 100%;
+        height: 400px;
+        background-color: #000;
+    }
+
+    picture {
+        margin: 1rem;
+    }
+    picture figcaption {
+        text-align: center;
+        font-style: oblique; 
+    }
+    </style>
+</head>
+<body>
+    <h1>Dubins Curves for Web Animation</h1>
+    <hr>
+    <section class="main">
+        <p>
+            Dubins Curves are used by robots cars to find the shortest path between two points.
+            They always move forwards and always create the smallest curves to from spot A to spot B, 
+            correctly adjusting their orientation.
+        </p>
+        <picture>
+            <img src="/demos/img/algorithm.gif"/>
+            <figcaption>Moving from vector Q<sub>1</sub> to Q<sub>G</sub></figcaption>            
+        </picture>
+
+        <article class="example1">
+            <h1>Example</h1>
+            <canvas id="mycanvas"></canvas>
+        </article>
+    </section>
+    <script>
+        var DubinsConfig = {
+            'locateFile': (f) => {
+                if(f == 'dubins.wasm') return '/dist/dubins.wasm'
+                else return f
+            }
+        };
+    </script>
+    <script src="/dist/dubins.js"></script>
+    <script>
+        window.DubinsAPI = {}
+        DubinsCurve(DubinsConfig).then( (Module) => {
+            window.DubinsAPI = {
+                VERSION: Module.cwrap('version','number',[])
+            }
+
+            console.log("Dubins WASM Module: ", DubinsAPI.VERSION )
+        })
+    </script>
+</body>
+</html>

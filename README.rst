@@ -1,13 +1,15 @@
-=============
-Dubins-Curves
-=============
+==================
+Dubins-Curves-wasm
+==================
 
 About
 =====
 
 This software finds the shortest paths between configurations for the Dubins' car [Dubins51]_, the forward only car-like vehicle with a constrained turning radius. A good description of the equations and basic strategies for doing this are described in section 15.3.1 `"Dubins Curves" <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms" [LaValle06]_.
-
 The approach used to find paths is based on the algebraic solutions published in [Shkel01]_. However, rather than using angular symmetries to improve performance, the simpler approach to test all possible solutions is used here. 
+
+Compiled to WebAssembly to use on the web.
+Very useful for organic animating from one point to another. 
 
 Examples
 ========
@@ -42,6 +44,7 @@ The following image shows some example paths, and the heading of the    vehicle 
 Other Version
 =============
 
+* The original C Version by Andrew Walker `Github <https://github.com/AndrewWalker/Dubins-Curves>`
 * There is a MATLAB Mex wrapper of this code on the `MathWorks FileExchange <http://www.mathworks.com.au/matlabcentral/fileexchange/40655-dubins-curve-mex>`_
 * There is a Python wrapper of this code available on `GitHub <https://github.com/AndrewWalker/pydubins>`_ and on `PyPI <https://pypi.python.org/pypi/dubins/>`_
 

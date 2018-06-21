@@ -18,9 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "dubins.h"
+#ifndef DUBINS_H
+#define DUBINS_H
+
 #include <math.h>
 #include <assert.h>
+#include <emscripten.h>
 
 #define EPSILON (10e-10)
 
@@ -31,10 +34,28 @@
 #define RLR (4)
 #define LRL (5)
 
+// Error codes
+#define EDUBOK        (0)   // No error
+#define EDUBCOCONFIGS (1)   // Colocated configurations
+#define EDUBPARAM     (2)   // Path parameterisitation error
+#define EDUBBADRHO    (3)   // the rho value is invalid
+#define EDUBNOPATH    (4)   // no connection between configurations with this word
+
 // The three segment types a path can be made up of
 #define L_SEG (0)
 #define S_SEG (1)
 #define R_SEG (2)
+
+// The various types of solvers for each of the path types
+typedef int (*DubinsWord)(double, double, double, double* );
+
+typedef struct
+{
+    double qi[3];       // the initial configuration
+    double param[3];    // the lengths of the three segments
+    double rho;         // model forward velocity / model angular velocity
+    int type;           // path type. one of LSL, LSR, ... 
+} DubinsPath;
 
 // The segment types for each of the Path types
 const int DIRDATA[][3] = {
@@ -46,6 +67,26 @@ const int DIRDATA[][3] = {
     { L_SEG, R_SEG, L_SEG }
 };
 
+/**
+ * Callback function for path sampling
+ *
+ * @note the q parameter is a configuration
+ * @note the t parameter is the distance along the path
+ * @note the user_data parameter is forwarded from the caller
+ * @note return non-zero to denote sampling should be stopped
+ */
+typedef int (*DubinsPathSamplingCallback)(double q[3], double t, void* user_data);
+
+// Only exposed for testing purposes
+int dubins_LSL( double alpha, double beta, double d, double* outputs );
+int dubins_RSR( double alpha, double beta, double d, double* outputs );
+int dubins_LSR( double alpha, double beta, double d, double* outputs );
+int dubins_RSL( double alpha, double beta, double d, double* outputs );
+int dubins_LRL( double alpha, double beta, double d, double* outputs );
+int dubins_RLR( double alpha, double beta, double d, double* outputs );
+
+
+// A complete list of the possible solvers that could give optimal paths 
 DubinsWord dubins_words[] = {
     dubins_LSL,
     dubins_LSR,
@@ -112,6 +153,21 @@ int dubins_init_normalised( double alpha, double beta, double d, DubinsPath* pat
     return EDUBOK;
 }
 
+/**
+ * Generate a path from an initial configuration to
+ * a target configuration, with a specified maximum turning
+ * radii
+ *
+ * A configuration is (x, y, theta), where theta is in radians, with zero
+ * along the line x = 0, and counter-clockwise is positive
+ *
+ * @param q0    - a configuration specified as an array of x, y, theta
+ * @param q1    - a configuration specified as an array of x, y, theta
+ * @param rho   - turning radius of the vehicle (forward velocity divided by maximum angular velocity)
+ * @param path  - the resultant path
+ * @return      - non-zero on error
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_init( double q0[3], double q1[3], double rho, DubinsPath* path )
 {
     int i;
@@ -223,6 +279,12 @@ int dubins_LRL( double alpha, double beta, double d, double* outputs )
     return EDUBOK;
 }
 
+/**
+ * Calculate the length of an initialised path
+ *
+ * @param path - the path to find the length of
+ */
+EMSCRIPTEN_KEEPALIVE
 double dubins_path_length( DubinsPath* path )
 {
     double length = 0.;
@@ -233,10 +295,18 @@ double dubins_path_length( DubinsPath* path )
     return length;
 }
 
+/**
+ * Extract an integer that represents which path type was used
+ *
+ * @param path    - an initialised path
+ * @return        - one of LSL, LSR, RSL, RSR, RLR or LRL (ie/ 0-5 inclusive)
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_path_type( DubinsPath* path ) {
     return path->type;
 }
 
+EMSCRIPTEN_KEEPALIVE
 void dubins_segment( double t, double qi[3], double qt[3], int type)
 {
     assert( type == L_SEG || type == S_SEG || type == R_SEG );
@@ -258,6 +328,15 @@ void dubins_segment( double t, double qi[3], double qt[3], int type)
     }
 }
 
+/**
+ * Calculate the configuration along the path, using the parameter t
+ *
+ * @param path - an initialised path
+ * @param t    - a length measure, where 0 <= t < dubins_path_length(path)
+ * @param q    - the configuration result
+ * @returns    - non-zero if 't' is not in the correct range
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_path_sample( DubinsPath* path, double t, double q[3] )
 {
     if( t < 0 || t >= dubins_path_length(path) ) {
@@ -307,6 +386,16 @@ int dubins_path_sample( DubinsPath* path, double t, double q[3] )
     return 0;
 }
 
+/**
+ * Walk along the path at a fixed sampling interval, calling the
+ * callback function at each interval
+ *
+ * @param path      - the path to sample
+ * @param cb        - the callback function to call for each sample
+ * @param user_data - optional information to pass on to the callback
+ * @param stepSize  - the distance along the path for subsequent samples
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_path_sample_many( DubinsPath* path, DubinsPathSamplingCallback cb, double stepSize, void* user_data )
 {
     double x = 0.0;
@@ -323,12 +412,27 @@ int dubins_path_sample_many( DubinsPath* path, DubinsPathSamplingCallback cb, do
     return 0;
 }
 
+/**
+ * Convenience function to identify the endpoint of a path
+ *
+ * @param path - an initialised path
+ * @param q    - the configuration result
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_path_endpoint( DubinsPath* path, double q[3] )
 {
     // TODO - introduce a new constant rather than just using EPSILON
     return dubins_path_sample( path, dubins_path_length(path) - EPSILON, q );
 }
 
+/**
+ * Convenience function to extract a subset of a path
+ *
+ * @param path    - an initialised path
+ * @param t       - a length measure, where 0 < t < dubins_path_length(path)
+ * @param newpath - the resultant path
+ */
+EMSCRIPTEN_KEEPALIVE
 int dubins_extract_subpath( DubinsPath* path, double t, DubinsPath* newpath )
 {
     // calculate the true parameter
@@ -349,3 +453,4 @@ int dubins_extract_subpath( DubinsPath* path, double t, DubinsPath* newpath )
 }
 
 
+#endif // DUBINS_H
