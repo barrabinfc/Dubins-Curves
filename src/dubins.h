@@ -123,6 +123,19 @@ double mod2pi( double theta )
     return fmodr( theta, 2 * M_PI );
 }
 
+EMSCRIPTEN_KEEPALIVE
+int dubins_test( double q0[3] , double q1[3], double rho, DubinsPath* path){
+    printf("DEBUG: q0: ");
+    printf("%f,%f,%f,%f\n", q0[0], q0[1], q0[2], rho);
+    printf("DEBUG: q1: ");
+    printf("%f,%f,%f\n", q1[0], q1[1], q1[2]);
+    printf("1: Dubins path->type: %p = %i\n", path, path->type);
+    path->type = 0xffffffff;
+    printf("2: Dubins path->type: %p = %i\n", path, path->type);
+    return 1;
+}
+
+
 int dubins_init_normalised( double alpha, double beta, double d, DubinsPath* path)
 {
     double best_cost = INFINITY;
@@ -170,6 +183,13 @@ int dubins_init_normalised( double alpha, double beta, double d, DubinsPath* pat
 EMSCRIPTEN_KEEPALIVE
 int dubins_init( double q0[3], double q1[3], double rho, DubinsPath* path )
 {
+    printf("DEBUG: q0: ");
+    printf("%f,%f,%f\n", q0[0], q0[1], q0[2]);
+    printf("DEBUG: q1: ");
+    printf("%f,%f,%f\n", q1[0], q1[1], q1[2]);
+    printf("DEBUG: rho = %f\n", rho);
+    printf("DEBUG: path = %p\n", path);
+
     int i;
     double dx = q1[0] - q0[0];
     double dy = q1[1] - q0[1];
@@ -339,6 +359,9 @@ void dubins_segment( double t, double qi[3], double qt[3], int type)
 EMSCRIPTEN_KEEPALIVE
 int dubins_path_sample( DubinsPath* path, double t, double q[3] )
 {
+    printf("1: Dubins (sample) path: %p \n", path );
+    printf("1: Dubins (sample) result: %p = %f %f\n", q, q[0], q[1] );
+    
     if( t < 0 || t >= dubins_path_length(path) ) {
         // error, parameter out of bounds
         return EDUBPARAM;

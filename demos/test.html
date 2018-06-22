@@ -63,11 +63,13 @@
     <script>
         window.DubinsAPI = {}
         DubinsCurve(DubinsConfig).then( (Module) => {
-            window.DubinsAPI = {
-                VERSION: Module.cwrap('version','number',[])
+            var path = Module.init([0,0,0], [4.0, 4.0, 3.142], 1.0)
+            let length = path.length;
+            console.log("Length: ", length/0.1)
+            for(var i=0; i < length; i+= 0.1){
+                let dir = Module.sample( path, i )
+                console.log("DubinPath path ", dir )
             }
-
-            console.log("Dubins WASM Module: ", DubinsAPI.VERSION )
         })
     </script>
 </body>
