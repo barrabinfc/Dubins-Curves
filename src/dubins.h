@@ -357,10 +357,11 @@ void dubins_segment( double t, double qi[3], double qt[3], int type)
  * @returns    - non-zero if 't' is not in the correct range
  */
 EMSCRIPTEN_KEEPALIVE
-int dubins_path_sample( DubinsPath* path, double t, double q[3] )
+int dubins_path_sample( DubinsPath* path, double t, double *q )
 {
-    printf("1: Dubins (sample) path: %p \n", path );
-    printf("1: Dubins (sample) result: %p = %f %f\n", q, q[0], q[1] );
+
+    // printf("1: Dubins (sample) path: %p %f \n", path ,t );
+    // printf("1: Dubins (sample) result: %p = %f %f\n", q, q[0], q[1] );
     
     if( t < 0 || t >= dubins_path_length(path) ) {
         // error, parameter out of bounds
@@ -405,6 +406,8 @@ int dubins_path_sample( DubinsPath* path, double t, double q[3] )
     q[0] = q[0] * path->rho + path->qi[0];
     q[1] = q[1] * path->rho + path->qi[1];
     q[2] = mod2pi(q[2]);
+    
+    printf("1: Dubins result: %p = %f %f %f %f\n", q, q[0], q[1],q[2],t );
 
     return 0;
 }

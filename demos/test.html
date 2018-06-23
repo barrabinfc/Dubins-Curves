@@ -65,10 +65,10 @@
         DubinsCurve(DubinsConfig).then( (Module) => {
             var path = Module.init([0,0,0], [4.0, 4.0, 3.142], 1.0)
             let length = path.length;
-            console.log("Length: ", length/0.1)
+            console.log("***************JS****************")
             for(var i=0; i < length; i+= 0.1){
-                let dir = Module.sample( path, i )
-                console.log("DubinPath path ", dir )
+                let q = Module.sample( path, i )
+                console.log(q[0],q[1],q[2], i)
             }
         })
     </script>

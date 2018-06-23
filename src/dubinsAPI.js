@@ -67,17 +67,10 @@ const EDUBNOPATH    = 4   // no connection between configurations with this word
 class DubinsPath {
     constructor( ) {
         let byteSize = getSizeOf( this.typedef() );
-        console.log("Sizeof DUbinsPath: ", byteSize)
         
         this._heap_ptr = Module._malloc( byteSize );
         this._heap = new Uint8Array( Module.HEAPU8.buffer, this._heap_ptr, byteSize)
-        this._view = new DataView(this._heap.buffer, this._heap.byteOffset )
-        
-        console.log("offset of type", getOffsetOf( this.typedef(), 'type') )
-        //this.type = 65535
-        /*
-            */
-        
+        this._view = new DataView(this._heap.buffer, this._heap.byteOffset )                
     }
 
     /**
@@ -121,22 +114,10 @@ Module['init'] = function( startPoint , endPoint , rho ){
 
     let path = new DubinsPath()
     
-    console.log(startHeap, endHeap, rho)
-    console.log(path._heap)
     let test = Module.ccall('dubins_init','number', ['array','array','number','number'], 
                             [startHeap, endHeap, rho, path._heap.byteOffset ]);
-    console.log("Dubins type: ", path.type )
 
-    /*
-    
-    let ret = Module.ccall('dubins_init', 'number', ['array','array','number','number'] 
-                                        [startHeap, 
-                                         endHeap, 
-                                         rho, 
-                                         path._heap.byteOffset] )
-    */
-   
-   return path
+    return path
 }
 
 Module['path_length'] = function( path ) {
@@ -145,10 +126,25 @@ Module['path_length'] = function( path ) {
 }
 
 Module['sample'] = function( path , t ) {
-    let q0 = new Float64Array(3)
-    let result = _arrayToHeap(q0)
-    Module.ccall('dubins_path_sample', 'number', ['number','number', 'array'],
-                        [ path._heap.byteOffset , t , result] )
-    console.log("q0 -> ", q0)
-    return Array.from(q0)
+    let q0 = Float64Array.from([0,0,0])
+    let sampleHeap = _arrayToHeap( q0 )
+    let dataView = new DataView(sampleHeap.buffer, sampleHeap.byteOffset )
+    
+    console.log("sampleHeap addr : 0x" + sampleHeap.byteOffset.toString(16) )
+    let res = Module.ccall('dubins_path_sample', 'number', ['number','number', 'number'],
+                                                [ path._heap.byteOffset , t , sampleHeap.byteOffset] )
+
+    let what = new Float64Array( sampleHeap.buffer, sampleHeap.byteOffset, 3 )
+
+    _freeArray( sampleHeap )
+
+    return [
+        what[0], //dataView.getFloat64(1, false) , 
+        what[1], //dataView.getFloat64(2, false), 
+        what[2], //dataView.getFloat64(3, false)
+    ]
+
+    _freeArray( result )
+    
+    //return Array.from(q0)
 }

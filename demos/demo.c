@@ -38,9 +38,11 @@ int main()
     dubins_init( q0, q1, 1.0, &path);
     
     printf("******* ORIGINAL ********\n");
+    /*
     printf("#length: %f\n", dubins_path_length(&path) / 0.1 );
     printf("#x,y,theta,t\n");
+    */
     dubins_path_sample_many( &path, printConfiguration, 0.1, NULL);
-
+    //*/
     return 0;
 }
