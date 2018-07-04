@@ -183,12 +183,6 @@ int dubins_init_normalised( double alpha, double beta, double d, DubinsPath* pat
 EMSCRIPTEN_KEEPALIVE
 int dubins_init( double q0[3], double q1[3], double rho, DubinsPath* path )
 {
-    printf("DEBUG: q0: ");
-    printf("%f,%f,%f\n", q0[0], q0[1], q0[2]);
-    printf("DEBUG: q1: ");
-    printf("%f,%f,%f\n", q1[0], q1[1], q1[2]);
-    printf("DEBUG: rho = %f\n", rho);
-    printf("DEBUG: path = %p\n", path);
 
     int i;
     double dx = q1[0] - q0[0];
@@ -407,8 +401,6 @@ int dubins_path_sample( DubinsPath* path, double t, double *q )
     q[1] = q[1] * path->rho + path->qi[1];
     q[2] = mod2pi(q[2]);
     
-    printf("1: Dubins result: %p = %f %f %f %f\n", q, q[0], q[1],q[2],t );
-
     return 0;
 }
 

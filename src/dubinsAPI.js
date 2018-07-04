@@ -125,26 +125,19 @@ Module['path_length'] = function( path ) {
                         [ path._heap.byteOffset ] )
 }
 
+/**
+ * Sample position of car at time T.
+ * returns array of: [posX,posY, angle]
+ */
 Module['sample'] = function( path , t ) {
-    let q0 = Float64Array.from([0,0,0])
-    let sampleHeap = _arrayToHeap( q0 )
-    let dataView = new DataView(sampleHeap.buffer, sampleHeap.byteOffset )
-    
-    console.log("sampleHeap addr : 0x" + sampleHeap.byteOffset.toString(16) )
+
+    /* Allocate, call, read back and free memory */
+    let sampleHeap = _arrayToHeap( Float64Array.from([0,0,0]) )
     let res = Module.ccall('dubins_path_sample', 'number', ['number','number', 'number'],
                                                 [ path._heap.byteOffset , t , sampleHeap.byteOffset] )
 
     let what = new Float64Array( sampleHeap.buffer, sampleHeap.byteOffset, 3 )
-
     _freeArray( sampleHeap )
 
-    return [
-        what[0], //dataView.getFloat64(1, false) , 
-        what[1], //dataView.getFloat64(2, false), 
-        what[2], //dataView.getFloat64(3, false)
-    ]
-
-    _freeArray( result )
-    
-    //return Array.from(q0)
+    return what
 }

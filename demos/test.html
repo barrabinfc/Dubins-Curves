@@ -1,76 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dubins Curve WebAssembly</title>
+    <title>Dubins Curve</title>
     <style>
-    body{
-        margin:40px auto;
-        max-width:650px;
-        line-height:1.6;
-        font-size:18px;
-        color:#444;
-        padding:0 10px;
-    }
-    h1,h2,h3 { line-height:1.2; }
-    hr { border-bottom: 0; }
+        body {
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            max-width: 650px;
+            line-height: 1.6;
+            font-size: 18px;
+            color: #444;
+            padding: 0 10px;
+        }
 
-    #mycanvas {
-        width: 100%;
-        height: 400px;
-        background-color: #000;
-    }
+        h1,
+        h2,
+        h3 {
+            line-height: 1.2;
+        }
 
-    picture {
-        margin: 1rem;
-    }
-    picture figcaption {
-        text-align: center;
-        font-style: oblique; 
-    }
+        hr {
+            border-bottom: 0;
+            width: 100%;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        picture {
+            margin: 1rem;
+        }
+
+        picture figcaption {
+            text-align: center;
+            font-style: oblique;
+        }
+
+
+        #canvas {
+            width: 640px;
+            height: 480px;
+            position: relative;
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAUUlEQVRYR+3VsQ0AMAgDQbwczMxUjJCILnUoIkXvHmFdY1XVsocRBRBAAAEEEEBgIpCZJsnc/XrQR3PcBToR8abA9dfjcCRAAQQQQAABBL4Q2Lvqf6ELJ43jAAAAAElFTkSuQmCC") center center;
+        }
+
+        #ballone {
+            position: absolute;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background-color: rgb(12, 211, 151, 0.8);
+            left: calc(50% - 12px);
+            top: calc(50% - 12px);
+        }
+        #ballone::before {
+            content: ' ';
+            position: relative;
+            top: 10px;
+            width: 50%;
+            height: 1px;
+            display: block;
+            margin-left: 12px;
+            background-color: #000;
+        }
+        #ballone::after {
+            content: ' ';
+            display: block;
+            width: 0; 
+            height: 0; 
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid black;
+            position: absolute;
+            right: -5px;
+            top: 25%;            
+        }
     </style>
+
 </head>
+
 <body>
     <h1>Dubins Curves for Web Animation</h1>
     <hr>
     <section class="main">
         <p>
-            Dubins Curves are used by robots cars to find the shortest path between two points.
-            They always move forwards and always create the smallest curves to from spot A to spot B, 
-            correctly adjusting their orientation.
+            Dubins Curves are used by robots cars to find the shortest path between two points. They always move forwards and always
+            create the smallest curves to from spot A to spot B, correctly adjusting their orientation.
         </p>
         <picture>
-            <img src="/demos/img/algorithm.gif"/>
-            <figcaption>Moving from vector Q<sub>1</sub> to Q<sub>G</sub></figcaption>            
+            <img src="/demos/img/algorithm.gif" />
+            <figcaption>Moving from vector Q
+                <sub>1</sub> to Q
+                <sub>G</sub>
+            </figcaption>
         </picture>
 
         <article class="example1">
             <h1>Example</h1>
-            <canvas id="mycanvas"></canvas>
+            <div id="canvas">
+                <div id="ballone"></div>
+            </div>
+            <button onclick="tween.stop().start()">Restart animation</button>
         </article>
     </section>
-    <script>
-        var DubinsConfig = {
-            'locateFile': (f) => {
-                if(f == 'dubins.wasm') return '/dist/dubins.wasm'
-                else return f
-            }
-        };
-    </script>
+
+
     <script src="/dist/dubins.js"></script>
+    <script src="/demos/libs/two.min.js"></script>
+    <script src="/demos/libs/Tween.js"></script>
     <script>
-        window.DubinsAPI = {}
-        DubinsCurve(DubinsConfig).then( (Module) => {
-            var path = Module.init([0,0,0], [4.0, 4.0, 3.142], 1.0)
-            let length = path.length;
-            console.log("***************JS****************")
-            for(var i=0; i < length; i+= 0.1){
-                let q = Module.sample( path, i )
-                console.log(q[0],q[1],q[2], i)
-            }
+        const DUBINS_WASM_FILE = '/dist/dubins.wasm'
+        function global(name, value) { window[name] = value }
+
+        var canvasDOM = document.getElementById('canvas');
+        var ball = document.getElementById('ballone');
+        var ballCoords = [0,0]
+        var tween = undefined
+
+        var animPath = null
+        var animLength = 0
+
+        var mouseX = 0, mouseY = 0, mouseMoved = false;
+        canvasDOM.addEventListener(`pointerdown`, (ev) => {
+            // To canvasDOM local coordinates, where 0,0 is the middle.
+            mouseX = (ev.pageX - (canvasDOM.offsetLeft + canvasDOM.clientWidth/2)) + document.body.scrollLeft
+            mouseY = (ev.pageY - (canvasDOM.offsetTop + canvasDOM.clientHeight/2)) + document.body.scrollTop
+
+            console.log("pointerDown", mouseX, mouseY)
+            
+            //mouseX = cmap( ev.clientX , 0, canvasSize.width,  0, canvasSize.width )
+            //mouseY = cmap( ev.clientY,  canvasSize.top, canvasSize.top+canvasSize.height, 0, canvasSize.height )
+            setup( {x: mouseX, y: mouseY } )
         })
+
+        function setup( destiny ) {
+            animPath = DubinsAPI.init( [ ballCoords[0], ballCoords[1], 0], 
+                                       [destiny.x, destiny.y, -Math.PI/2], 50 )
+            animLength = animPath.length;
+            console.log(animPath.length)
+
+            var coords = {t: 0.0}
+            tween = new TWEEN.Tween(coords)
+                            .easing(TWEEN.Easing.Cubic.InOut)
+                            .to({t: animPath.length}, 2500)
+                            .onComplete( () => { tween.stop() })
+                            .onUpdate( function(){
+                var [mx,my, angle] = DubinsAPI.sample( animPath, coords.t)
+                ballCoords = [mx, my]
+                let trAngle = 'rotate('+angle.toFixed(2)+'rad)'
+                let trValue = 'translate(' + mx.toFixed(2) +'px, ' + my.toFixed(2) + 'px)'
+
+                ball.style.transform = trValue + ' ' + trAngle
+                ball.style.webkitTransform = trValue + ' ' + trAngle
+            }).start()
+
+            animate()
+        }
+
+        function animate(time){
+            requestAnimationFrame(animate)
+            TWEEN.update(time)
+        }
+
+        document.addEventListener('DOMContentLoaded', function preload() {
+            /** Preload wasm */
+            DubinsCurve({ 'locateFile': (f) => (f == 'dubins.wasm' ? DUBINS_WASM_FILE : f) })
+                .then((Module) => {
+                    global('DubinsAPI', Module)
+                    console.info("🙌 Loaded Dubins Wasm successfully. Stored as window.DubinsAPI")
+                })
+        })
+
     </script>
 </body>
+
 </html>

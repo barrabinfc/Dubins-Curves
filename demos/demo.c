@@ -29,7 +29,7 @@ int printConfiguration(double q[3], double x, void* user_data) {
     printf("%f,%f,%f,%f\n", q[0], q[1], q[2], x);
     return 0;
 }
-
+/*
 int main()
 {
     double q0[] = { 0,0,0 };
@@ -41,8 +41,9 @@ int main()
     /*
     printf("#length: %f\n", dubins_path_length(&path) / 0.1 );
     printf("#x,y,theta,t\n");
-    */
+    
     dubins_path_sample_many( &path, printConfiguration, 0.1, NULL);
-    //*/
+    //
     return 0;
 }
+*/

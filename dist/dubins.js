@@ -1730,7 +1730,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 5920;
+STATICTOP = STATIC_BASE + 5792;
 /* global initializers */  __ATINIT__.push();
 
 
@@ -1739,7 +1739,7 @@ STATICTOP = STATIC_BASE + 5920;
 
 
 
-var STATIC_BUMP = 5920;
+var STATIC_BUMP = 5792;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -1966,9 +1966,9 @@ function nullFunc_iidi(x) { Module["printErr"]("Invalid function pointer called 
 
 function nullFunc_iiii(x) { Module["printErr"]("Invalid function pointer called with signature 'iiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
-Module['wasmTableSize'] = 48;
+Module['wasmTableSize'] = 33;
 
-Module['wasmMaxTableSize'] = 48;
+Module['wasmMaxTableSize'] = 33;
 
 function invoke_idddi(index,a1,a2,a3,a4) {
   try {
@@ -2097,12 +2097,6 @@ var real__llvm_minnum_f64 = asm["_llvm_minnum_f64"]; asm["_llvm_minnum_f64"] = f
   return real__llvm_minnum_f64.apply(null, arguments);
 };
 
-var real__main = asm["_main"]; asm["_main"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real__main.apply(null, arguments);
-};
-
 var real__malloc = asm["_malloc"]; asm["_malloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2113,12 +2107,6 @@ var real__sbrk = asm["_sbrk"]; asm["_sbrk"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real__sbrk.apply(null, arguments);
-};
-
-var real__version = asm["_version"]; asm["_version"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real__version.apply(null, arguments);
 };
 
 var real_establishStackSpace = asm["establishStackSpace"]; asm["establishStackSpace"] = function() {
@@ -2219,10 +2207,6 @@ var _llvm_minnum_f64 = Module["_llvm_minnum_f64"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_llvm_minnum_f64"].apply(null, arguments) };
-var _main = Module["_main"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_main"].apply(null, arguments) };
 var _malloc = Module["_malloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2239,10 +2223,6 @@ var _sbrk = Module["_sbrk"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_sbrk"].apply(null, arguments) };
-var _version = Module["_version"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_version"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2414,52 +2394,6 @@ dependenciesFulfilled = function runCaller() {
   if (!Module['calledRun']) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
 }
 
-Module['callMain'] = function callMain(args) {
-  assert(runDependencies == 0, 'cannot call main when async dependencies remain! (listen on __ATMAIN__)');
-  assert(__ATPRERUN__.length == 0, 'cannot call main when preRun functions remain to be called');
-
-  args = args || [];
-
-  ensureInitRuntime();
-
-  var argc = args.length+1;
-  var argv = stackAlloc((argc + 1) * 4);
-  HEAP32[argv >> 2] = allocateUTF8OnStack(Module['thisProgram']);
-  for (var i = 1; i < argc; i++) {
-    HEAP32[(argv >> 2) + i] = allocateUTF8OnStack(args[i - 1]);
-  }
-  HEAP32[(argv >> 2) + argc] = 0;
-
-
-  try {
-
-    var ret = Module['_main'](argc, argv, 0);
-
-
-    // if we're not running an evented main loop, it's time to exit
-      exit(ret, /* implicit = */ true);
-  }
-  catch(e) {
-    if (e instanceof ExitStatus) {
-      // exit() throws this once it's done to make sure execution
-      // has been stopped completely
-      return;
-    } else if (e == 'SimulateInfiniteLoop') {
-      // running an evented main loop, don't immediately exit
-      Module['noExitRuntime'] = true;
-      return;
-    } else {
-      var toLog = e;
-      if (e && typeof e === 'object' && e.stack) {
-        toLog = [e, e.stack];
-      }
-      Module.printErr('exception thrown: ' + toLog);
-      Module['quit'](1, e);
-    }
-  } finally {
-    calledMain = true;
-  }
-}
 
 
 
@@ -2491,7 +2425,7 @@ function run(args) {
 
     if (Module['onRuntimeInitialized']) Module['onRuntimeInitialized']();
 
-    if (Module['_main'] && shouldRunNow) Module['callMain'](args);
+    assert(!Module['_main'], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
 
     postRun();
   }
@@ -2612,11 +2546,6 @@ if (Module['preInit']) {
   }
 }
 
-// shouldRunNow refers to calling main(), not run().
-var shouldRunNow = true;
-if (Module['noInitialRun']) {
-  shouldRunNow = false;
-}
 
 Module["noExitRuntime"] = true;
 
@@ -2759,28 +2688,21 @@ Module['path_length'] = function( path ) {
                         [ path._heap.byteOffset ] )
 }
 
+/**
+ * Sample position of car at time T.
+ * returns array of: [posX,posY, angle]
+ */
 Module['sample'] = function( path , t ) {
-    let q0 = Float64Array.from([0,0,0])
-    let sampleHeap = _arrayToHeap( q0 )
-    let dataView = new DataView(sampleHeap.buffer, sampleHeap.byteOffset )
-    
-    console.log("sampleHeap addr : 0x" + sampleHeap.byteOffset.toString(16) )
+
+    /* Allocate, call, read back and free memory */
+    let sampleHeap = _arrayToHeap( Float64Array.from([0,0,0]) )
     let res = Module.ccall('dubins_path_sample', 'number', ['number','number', 'number'],
                                                 [ path._heap.byteOffset , t , sampleHeap.byteOffset] )
 
     let what = new Float64Array( sampleHeap.buffer, sampleHeap.byteOffset, 3 )
-
     _freeArray( sampleHeap )
 
-    return [
-        what[0], //dataView.getFloat64(1, false) , 
-        what[1], //dataView.getFloat64(2, false), 
-        what[2], //dataView.getFloat64(3, false)
-    ]
-
-    _freeArray( result )
-    
-    //return Array.from(q0)
+    return what
 }
 
 
