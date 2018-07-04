@@ -37,7 +37,7 @@
             margin: 1rem;
         }
 
-        picture figcaption {
+        figcaption, caption , .caption {
             text-align: center;
             font-style: oblique;
         }
@@ -59,26 +59,10 @@
             top: calc(50% - 12px);
         }
         #ballone::before {
-            content: ' ';
+            content: '→';
             position: relative;
-            top: 10px;
-            width: 50%;
-            height: 1px;
-            display: block;
-            margin-left: 12px;
-            background-color: #000;
-        }
-        #ballone::after {
-            content: ' ';
-            display: block;
-            width: 0; 
-            height: 0; 
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 5px solid black;
-            position: absolute;
-            right: -5px;
-            top: 25%;            
+            top: -4px;
+            left: 12px;
         }
     </style>
 
@@ -105,7 +89,7 @@
             <div id="canvas">
                 <div id="ballone"></div>
             </div>
-            <button onclick="tween.stop().start()">Restart animation</button>
+            <div class="caption">Click anywhere to move the ball</div>
         </article>
     </section>
 
@@ -119,7 +103,7 @@
 
         var canvasDOM = document.getElementById('canvas');
         var ball = document.getElementById('ballone');
-        var ballCoords = [0,0]
+        var ballCoords = [0,0,0]
         var tween = undefined
 
         var animPath = null
@@ -130,28 +114,24 @@
             // To canvasDOM local coordinates, where 0,0 is the middle.
             mouseX = (ev.pageX - (canvasDOM.offsetLeft + canvasDOM.clientWidth/2)) + document.body.scrollLeft
             mouseY = (ev.pageY - (canvasDOM.offsetTop + canvasDOM.clientHeight/2)) + document.body.scrollTop
-
-            console.log("pointerDown", mouseX, mouseY)
             
-            //mouseX = cmap( ev.clientX , 0, canvasSize.width,  0, canvasSize.width )
-            //mouseY = cmap( ev.clientY,  canvasSize.top, canvasSize.top+canvasSize.height, 0, canvasSize.height )
             setup( {x: mouseX, y: mouseY } )
         })
 
         function setup( destiny ) {
-            animPath = DubinsAPI.init( [ ballCoords[0], ballCoords[1], 0], 
+            animPath = DubinsAPI.init( ballCoords, 
                                        [destiny.x, destiny.y, -Math.PI/2], 50 )
             animLength = animPath.length;
-            console.log(animPath.length)
 
             var coords = {t: 0.0}
             tween = new TWEEN.Tween(coords)
                             .easing(TWEEN.Easing.Cubic.InOut)
-                            .to({t: animPath.length}, 2500)
+                            .to({t: animPath.length-0.01}, 2500)
                             .onComplete( () => { tween.stop() })
                             .onUpdate( function(){
                 var [mx,my, angle] = DubinsAPI.sample( animPath, coords.t)
-                ballCoords = [mx, my]
+                ballCoords = [mx, my, angle]
+                
                 let trAngle = 'rotate('+angle.toFixed(2)+'rad)'
                 let trValue = 'translate(' + mx.toFixed(2) +'px, ' + my.toFixed(2) + 'px)'
 
