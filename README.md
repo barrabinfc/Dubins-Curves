@@ -55,7 +55,6 @@ The following image shows some example paths, and the heading of the    vehicle 
 * [The original C Version by Andrew Walker](https://github.com/AndrewWalker/Dubins-Curves)
 * There is a MATLAB Mex wrapper of this code on the [MathWorks FileExchange](http://www.mathworks.com.au/matlabcentral/fileexchange/40655-dubins-curve-mex>)
 * There is a Python wrapper of this code available on [GitHub](https://github.com/AndrewWalker/pydubins) and on [PyPI](https://pypi.python.org/pypi/dubins/)
-* There is a Javascript wrapper of this code available on [Github](
 
 ## Citing
 
