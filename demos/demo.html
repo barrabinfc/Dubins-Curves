@@ -11,17 +11,23 @@
             margin: 40px auto;
             display: flex;
             flex-direction: column;
-            max-width: 650px;
-            line-height: 1.6;
-            font-size: 18px;
+            max-width: 800px;
+
             color: #444;
             padding: 0 10px;
+
+            line-height: 1.6;
+            font-size: 18px;
+            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
+            text-rendering: optimizeLegibility;
+            word-wrap: break-word;
         }
 
         h1,
         h2,
         h3 {
             line-height: 1.2;
+            margin-bottom: 16px;
         }
 
         hr {
@@ -29,21 +35,44 @@
             width: 100%;
         }
 
-        img {
-            max-width: 100%;
+        pre { margin-bottom: 16px; }
+        code { padding: 0.5em; background-color: #F0F0F0; }
+
+        pre code {
+            background-color: #F0F0F0;
+                border: 0;
+                display: inline;
+                font-size: 85%;
+                line-height: 16px;
+                margin: 0;
+                max-width: auto;
+                overflow: visible;
+                padding: 0;
+                white-space: pre;
+                word-break: normal;
+                word-wrap: normal;
         }
+
+        img { max-width: 100%; }
 
         picture {
             margin: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
         }
-
         figcaption, caption , .caption {
+            font-size: 85%;
             text-align: center;
             font-style: oblique;
+            margin-top: 1rem;
         }
 
 
         #canvas {
+            margin: 0px auto;
             width: 640px;
             height: 480px;
             position: relative;
@@ -66,6 +95,9 @@
         }
     </style>
 
+    <link rel="stylesheet"
+    href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 </head>
 
 <body>
@@ -91,6 +123,59 @@
             </div>
             <div class="caption">Click anywhere to move the ball</div>
         </article>
+
+        <article class="usage">
+            <h1>Usage</h1>
+            <p>1. Add <code>dubins.js</code> to your HTML, and preload <code>dubins.wasm</code> webassembly via javascript.</p>
+
+<pre><code class="javascript">DubinsCurve({ 
+    /** Point to the wasm file */
+    'locateFile': (f) => {
+        return (f === 'dubins.wasm' ? '/dist/dubins.wasm' : f)
+    }
+}).then((Module) => {
+    window.DubinsAPI = Module
+    console.info("🙌 Loaded Dubins Wasm successfully. Use as window.DubinsAPI")
+})
+</code></pre>
+
+<p>2. Use <code>DubinsAPI.init</code> and <code>DubinsAPI.sample</code> methods for the interpolation.</p>
+<pre><code class="javascript"> 
+let start = null
+let ball = document.querySelector('#ball');
+
+/* Arguments: [x0,y1,angle0], [x1,y1,angle1], radius */
+let path = DubinsAPI.init( [0,   0,    Math.Pi], 
+                           [200, 200, -Math.Pi], 50 );
+
+/*
+ * Interpolate from 0 to path.length
+ */
+function animate( time ){
+    if(!start) start = time
+
+    // Sample position at current time
+    let t = (time - start)/1000
+    let [mx,my,angle] = DubinsAPI.sample( path , t )
+    
+    // Animate using CSS Transforms for better performance
+    let transRot  = `rotate(${angle.toFixed(2)}rad)`
+    let transPos  = `translate(${mx.toFixed(2)}px, ${my.toFixed(2)}px)`
+    let transform = `${transPos} ${transRot}`
+
+    ball.style.transform = transform 
+    ball.style.webkitTransform = transform
+    
+    if(t < path.length){
+        requestAnimationFrame(animate)
+    }
+}
+requestAnimationFrame(animate)
+</code></pre>
+        </article>
+
+        <h2>Thats it!</h2>
+        <p>You can create many <code>paths</code> at the same time. You can also easily use tweening to add acceleration via easing.</p>
     </section>
 
 
@@ -157,6 +242,9 @@
         })
 
     </script>
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
 </body>
 
 </html>
