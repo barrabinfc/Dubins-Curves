@@ -1,41 +1,56 @@
 ==================
-Dubins-Curves-wasm
+Dubins-Curves-WASM
 ==================
+
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](https://forthebadge.com)
+[![DOI:10.1007/978-3-319-76207-4_15](https://zenodo.org/badge/DOI/10.1007/978-3-319-76207-4_15.svg)](https://doi.org/10.1007/978-3-319-76207-4_15)
 
 About
 =====
 
 This software finds the shortest paths between configurations for the Dubins' car [Dubins51]_, the forward only car-like vehicle with a constrained turning radius. A good description of the equations and basic strategies for doing this are described in section 15.3.1 `"Dubins Curves" <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms" [LaValle06]_.
-The approach used to find paths is based on the algebraic solutions published in [Shkel01]_. However, rather than using angular symmetries to improve performance, the simpler approach to test all possible solutions is used here. 
 
-Compiled to WebAssembly for use on the web.
-Very useful for organic animation from point A to B, with orientation. 
+Compiled to `WebAssembly` for the web.
+Very useful for organic animation from point A to B, correctly respecting the car orientation. 
 
 Examples
 ========
 
-The following code snippet demonstrates how to generate intermediate points along the shortest path between a pair of configuration (x, y, theta).
+The following code animates `ball` from `[0,0]` with direction `Math.Pi` to point B `[100, 100, -Math.Pi]`, along the shortest path.
 
-.. code-block:: c
+.. code-block:: javascript
+    let start = null
+    let ball = document.querySelector('#ball');
 
-    #include "dubins.h"
-    #include <stdio.h>
+    /* Arguments: [x0,y1,angle0], [x1,y1,angle1], radius */
+    let path = DubinsAPI.init( [0,   0,    Math.Pi], 
+                            [200, 200, -Math.Pi], 50 );
 
-    int printConfiguration(double q[3], double x, void* user_data) {
-        printf("%f, %f, %f, %f\n", q[0], q[1], q[2], x);
-        return 0;
+    /*
+    * Interpolate from 0 to path.length
+    */
+    function animate( time ){
+        if(!start) start = time
+
+        // Sample position at current time
+        let t = (time - start)/1000
+        let [mx,my,angle] = DubinsAPI.sample( path , t )
+        
+        // Animate using CSS Transforms for better performance
+        let transRot  = `rotate(${angle.toFixed(2)}rad)`
+        let transPos  = `translate(${mx.toFixed(2)}px, ${my.toFixed(2)}px)`
+        let transform = `${transPos} ${transRot}`
+
+        ball.style.transform = transform 
+        ball.style.webkitTransform = transform
+        
+        if(t < path.length){
+            requestAnimationFrame(animate)
+        }
     }
+    requestAnimationFrame(animate)
 
-    int main()
-    {
-        double q0[] = { 0,0,0 };
-        double q1[] = { 4,4,3.142 };
-        double turning_radius = 1.0;
-        DubinsPath path;
-        dubins_init( q0, q1, turning_radius, &path);
-        dubins_path_sample_many( &path, printConfiguration, 0.1, NULL);
-        return 0;
-    }
 
 The following image shows some example paths, and the heading of the    vehicle at each of the intermediate configurations.
 
