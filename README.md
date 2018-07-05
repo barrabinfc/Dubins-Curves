@@ -7,6 +7,8 @@
 Javascript wrapper around [Andrew Walker C Code](https://github.com/AndrewWalker/Dubins-Curves), compiled via `WebAssembly`.
 Very useful for organic animation from point A to B, correctly respecting the car orientation. 
 
+[Example](https://barrabinfc.github.io/Dubins-Curves/demo.html)
+
 A good description of the equations and basic strategies for doing this are described in [section 15.3.1 "Dubins Curves" of the book "Planning Algorithms"][LaValle06]
 
 ## Examples
