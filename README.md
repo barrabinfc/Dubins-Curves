@@ -4,10 +4,14 @@
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](https://forthebadge.com)
 [![WebAssembly](https://webassembly.org/css/webassembly.svg)](https://webassembly.org/)
 
-> This software finds the shortest paths between configurations for the Dubins' car [Dubins51]_, the forward only car-like vehicle with a constrained turning radius. A good description of the equations and basic strategies for doing this are described in section 15.3.1 `"Dubins Curves" <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms" [LaValle06]_.
+> This software finds the shortest paths between configurations for the Dubins' car [Dubins51]_, the forward only car-like vehicle with a constrained turning radius. 
 
 Compiled to `WebAssembly` for the web.
 Very useful for organic animation from point A to B, correctly respecting the car orientation. 
+
+[Demo](http://barrabinfc.github.io/Dubins-Curves)
+
+> A good description of the equations and basic strategies for doing this are described in [section 15.3.1 `"Dubins Curves" <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms"][LaValle06]
 
 ## Examples
 
@@ -46,9 +50,9 @@ The following code animates `ball` from `[0,0]` with direction `Math.Pi` to poin
     requestAnimationFrame(animate)
 ```
 
-The following image shows some example paths, and the heading of the    vehicle at each of the intermediate configurations.
+The following image shows some example paths, and the heading of the vehicle at each of the intermediate configurations.
 
-.. image:: ./docs/images/samples.png
+![example](./docs/images/samples.png "Example")
 
 ## Other Version
 
@@ -91,8 +95,8 @@ MIT License. See `LICENSE.txt <LICENSE.txt>`_ for details.
 
 ## References
 
-.. [Dubins51] Dubins, L.E. (July 1957). "On Curves of Minimal Length with a Constraint on Average Curvature, and with Prescribed Initial and Terminal Positions and Tangents". American Journal of Mathematics 79 (3): 497–516
-.. [LaValle06] LaValle, S. M. (2006). "Planning Algorithms". Cambridge University Press
-.. [Shkel01] Shkel, A. M. and Lumelsky, V. (2001). "Classification of the Dubins set". Robotics and Autonomous Systems 34 (2001) 179–202
-.. [Walker11] Walker, A. (2011). "Hard Real-Time Motion Planning for Autonomous Vehicles", PhD thesis, Swinburne University.
-.. [Smart08] Royce, S. (2008). "Evolutionary Control of Autonomous Underwater Vehicles". PhD thesis, RMIT
+* [Dubins51] Dubins, L.E. (July 1957). "On Curves of Minimal Length with a Constraint on Average Curvature, and with Prescribed Initial and Terminal Positions and Tangents". American Journal of Mathematics 79 (3): 497–516
+* [LaValle06] LaValle, S. M. (2006). "Planning Algorithms". Cambridge University Press
+* [Shkel01] Shkel, A. M. and Lumelsky, V. (2001). "Classification of the Dubins set". Robotics and Autonomous Systems 34 (2001) 179–202
+* [Walker11] Walker, A. (2011). "Hard Real-Time Motion Planning for Autonomous Vehicles", PhD thesis, Swinburne University.
+* [Smart08] Royce, S. (2008). "Evolutionary Control of Autonomous Underwater Vehicles". PhD thesis, RMIT
