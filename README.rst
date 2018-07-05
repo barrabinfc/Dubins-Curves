@@ -1,9 +1,10 @@
-==================
-Dubins-Curves-WASM
-==================
+=============
+Dubins-Curves
+=============
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](https://forthebadge.com)
+[![WebAssembly](https://webassembly.org/css/webassembly.svg)](https://webassembly.org/)
 
 About
 =====
