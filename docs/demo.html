@@ -6,97 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dubins Curve</title>
-    <style>
-        body {
-            margin: 40px auto;
-            display: flex;
-            flex-direction: column;
-            max-width: 800px;
 
-            color: #444;
-            padding: 0 10px;
-
-            line-height: 1.6;
-            font-size: 18px;
-            font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
-            text-rendering: optimizeLegibility;
-            word-wrap: break-word;
-        }
-
-        h1,
-        h2,
-        h3 {
-            line-height: 1.2;
-            margin-bottom: 16px;
-        }
-
-        hr {
-            border-bottom: 0;
-            width: 100%;
-        }
-
-        pre { margin-bottom: 16px; }
-        code { padding: 0.5em; background-color: #F0F0F0; }
-
-        pre code {
-            background-color: #F0F0F0;
-                border: 0;
-                display: inline;
-                font-size: 85%;
-                line-height: 16px;
-                margin: 0;
-                max-width: auto;
-                overflow: visible;
-                padding: 0;
-                white-space: pre;
-                word-break: normal;
-                word-wrap: normal;
-        }
-
-        img { max-width: 100%; }
-
-        picture {
-            margin: 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
-        figcaption, caption , .caption {
-            font-size: 85%;
-            text-align: center;
-            font-style: oblique;
-            margin-top: 1rem;
-        }
-
-
-        #canvas {
-            margin: 0px auto;
-            width: 640px;
-            height: 480px;
-            position: relative;
-            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAUUlEQVRYR+3VsQ0AMAgDQbwczMxUjJCILnUoIkXvHmFdY1XVsocRBRBAAAEEEEBgIpCZJsnc/XrQR3PcBToR8abA9dfjcCRAAQQQQAABBL4Q2Lvqf6ELJ43jAAAAAElFTkSuQmCC") center center;
-        }
-
-        #ballone {
-            position: absolute;
-            width: 24px; height: 24px;
-            border-radius: 50%;
-            background-color: rgb(12, 211, 151, 0.8);
-            left: calc(50% - 12px);
-            top: calc(50% - 12px);
-        }
-        #ballone::before {
-            content: '→';
-            position: relative;
-            top: -4px;
-            left: 12px;
-        }
-    </style>
-
-    <link rel="stylesheet"
-    href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <link rel="stylesheet" href="css/dracula.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
+    
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 </head>
 
@@ -108,6 +22,7 @@
             Dubins Curves are used by robots cars to find the shortest path between two points. They always move forwards and always
             create the smallest curves to from spot A to spot B, correctly adjusting their orientation.
         </p>
+        <!--
         <picture>
             <img src="images/algorithm.gif" />
             <figcaption>Moving from vector Q
@@ -115,18 +30,17 @@
                 <sub>G</sub>
             </figcaption>
         </picture>
-
+        -->
         <article class="example1">
-            <h1>Example</h1>
             <div id="canvas">
                 <div id="ballone"></div>
             </div>
-            <div class="caption">Click anywhere to move the ball</div>
+            <div class="caption">Click anywhere to move the car</div>
         </article>
 
         <article class="usage">
-            <h1>Usage</h1>
-            <p>1. Add <code>dubins.js</code> to your HTML, and preload <code>dubins.wasm</code> webassembly via javascript.</p>
+            <h2>Usage</h2>
+            <p>1. Add <code>dubins.js</code> to your HTML, and preload <code>dubins.wasm</code> webassembly via javascript: </p>
 
 <pre><code class="javascript">DubinsCurve({ 
     /** Point to the wasm file */
@@ -140,13 +54,12 @@
 </code></pre>
 
 <p>2. Use <code>DubinsAPI.init</code> and <code>DubinsAPI.sample</code> methods for the interpolation.</p>
-<pre><code class="javascript"> 
-let start = null
+<pre><code class="javascript">let start = null
 let ball = document.querySelector('#ball');
 
 /* Arguments: [x0,y1,angle0], [x1,y1,angle1], radius */
 let path = DubinsAPI.init( [0,   0,    Math.Pi], 
-                           [200, 200, -Math.Pi], 50 );
+                           [200, 200, -Math.Pi], 128 );
 
 /*
  * Interpolate from 0 to path.length
@@ -177,7 +90,7 @@ requestAnimationFrame(animate)
         <h2>Thats it!</h2>
         <p>You can create many <code>paths</code> at the same time. You can also easily use tweening to add acceleration via easing.</p>
     </section>
-
+    <a class="github-fork-ribbon" href="http://url.to-your.repo" data-ribbon="Fork me on Github" title="Fork me on GitHub">Fork me on GitHub</a>
 
     <script src="dist/dubins.js"></script>
     <script src="libs/two.min.js"></script>
@@ -195,7 +108,7 @@ requestAnimationFrame(animate)
         var animLength = 0
 
         var mouseX = 0, mouseY = 0, mouseMoved = false;
-        canvasDOM.addEventListener(`pointerdown`, (ev) => {
+        document.addEventListener(`pointerdown`, (ev) => {
             // To canvasDOM local coordinates, where 0,0 is the middle.
             mouseX = (ev.pageX - (canvasDOM.offsetLeft + canvasDOM.clientWidth/2)) + document.body.scrollLeft
             mouseY = (ev.pageY - (canvasDOM.offsetTop + canvasDOM.clientHeight/2)) + document.body.scrollTop
@@ -204,14 +117,15 @@ requestAnimationFrame(animate)
         })
 
         function setup( destiny ) {
+            console.log(`from: ${ballCoords} to ${destiny.x}, ${destiny.y}`)
             animPath = DubinsAPI.init( ballCoords, 
-                                       [destiny.x, destiny.y, -Math.PI/2], 50 )
+                                       [destiny.x, destiny.y, 0], 160 )
             animLength = animPath.length;
 
             var coords = {t: 0.0}
             tween = new TWEEN.Tween(coords)
                             .easing(TWEEN.Easing.Cubic.InOut)
-                            .to({t: animPath.length-0.01}, 2500)
+                            .to({t: animLength-0.01}, 3500)
                             .onComplete( () => { tween.stop() })
                             .onUpdate( function(){
                 var [mx,my, angle] = DubinsAPI.sample( animPath, coords.t)

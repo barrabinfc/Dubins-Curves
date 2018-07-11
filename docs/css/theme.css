@@ -1,0 +1,112 @@
+/**
+ * Motherfucking css
+ */
+@font-face {
+    font-family: 'FuturaStd';
+    font-weight: 300;
+    src: 
+         url('../fonts/FuturaStd-Book.woff2') format('woff2'); /* Super Modern Browsers */
+  }
+  @font-face {
+    font-family: 'FuturaStd';
+    font-weight: 600;
+    src: 
+         url('../fonts/FuturaStd-Bold.woff2') format('woff2'); /* Super Modern Browsers */
+}  
+
+body {
+    overflow-x: hidden;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+
+    color: #373a3c;
+    padding: 0 10px;
+    background-color: #fff;
+
+    line-height: 1.625;
+    font-size: 18px;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    text-rendering: optimizeLegibility;
+    word-wrap: break-word;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'FuturaStd';
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 1em;
+}
+
+hr {
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    width: 100%;
+}
+
+pre { margin-bottom: 16px; }
+code { padding: 0.5em; background-color: #F0F0F0; border-radius: 8px; }
+
+pre code {
+    background-color: #F0F0F0;
+    border: 0;
+    display: inline;
+    font-size: 85%;
+    line-height: 16px;
+    margin: 0;
+    max-width: auto;
+    overflow: visible;
+    white-space: pre;
+    word-break: normal;
+    word-wrap: normal;
+}
+
+img { max-width: 100%; }
+
+picture {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+figcaption, caption , .caption {
+    font-size: 85%;
+    text-align: center;
+    font-style: oblique;
+    margin-top: 1rem;
+}
+
+article {
+    margin: 4em 0;
+}
+
+
+#canvas {
+    margin: 0px auto;
+    width: 100%;
+    height: 480px;
+    position: relative;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAUUlEQVRYR+3VsQ0AMAgDQbwczMxUjJCILnUoIkXvHmFdY1XVsocRBRBAAAEEEEBgIpCZJsnc/XrQR3PcBToR8abA9dfjcCRAAQQQQAABBL4Q2Lvqf6ELJ43jAAAAAElFTkSuQmCC") center center;
+}
+
+#ballone {
+    position: absolute;
+    width: 160px; height: 96px;
+    background: url('../images/car.png') center center;
+    background-size: cover;
+    /* background-color: rgb(12, 211, 151, 0.8); */
+    left: calc(50% - 80px);
+    top: calc(50% - 48px);
+}
+
+.hljs {
+    padding: 1em;
+    border-radius: 8px;
+    background-color: #373a3c;
+    color: #fff;
+}
