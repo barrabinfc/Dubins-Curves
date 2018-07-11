@@ -12,6 +12,8 @@ are described in section 15.3.1 `"Dubins Curves"
 <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms"
 [LaValle06]_.
 
+`Demo <http://barrabinfc.github.io/js-dubinscurves/demo.html>`
+
 The approach used to find paths is based on the algebraic solutions published
 in [Shkel01]_. However, rather than using angular symmetries to improve
 performance, the simpler approach to test all possible solutions is used here. 
@@ -32,7 +34,7 @@ Examples
 
 The following code animates `ball` from `[0,0]` with direction `Math.Pi` to point B `[100, 100, -Math.Pi]`, along the shortest path.
 
-.. code-block:: javascrip
+.. code-block:: javascript
     let start = null
     let ball = document.querySelector('#ball');
 
