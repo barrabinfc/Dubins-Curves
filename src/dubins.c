@@ -78,6 +78,7 @@ double mod2pi( double theta )
     return fmodr( theta, 2 * M_PI );
 }
 
+EMSCRIPTEN_KEEPALIVE
 int dubins_shortest_path(DubinsPath* path, double q0[3], double q1[3], double rho)
 {
     int i, errcode;
@@ -140,6 +141,7 @@ int dubins_path(DubinsPath* path, double q0[3], double q1[3], double rho, Dubins
     return errcode;
 }
 
+EMSCRIPTEN_KEEPALIVE
 double dubins_path_length( DubinsPath* path )
 {
     double length = 0.;

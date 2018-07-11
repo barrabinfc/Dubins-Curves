@@ -1,5 +1,5 @@
-var DubinsCurve = function(DubinsCurve) {
-  DubinsCurve = DubinsCurve || {};
+var Dubins = function(Dubins) {
+  Dubins = Dubins || {};
 
 // The Module object: Our interface to the outside world. We import
 // and export values on it. There are various ways Module can be used:
@@ -14,7 +14,7 @@ var DubinsCurve = function(DubinsCurve) {
 // after the generated code, you will need to define   var Module = {};
 // before the code. Then that object will be used in the code, and you
 // can continue to use Module afterwards as well.
-var Module = typeof DubinsCurve !== 'undefined' ? DubinsCurve : {};
+var Module = typeof Dubins !== 'undefined' ? Dubins : {};
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
@@ -1730,7 +1730,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 2768;
+STATICTOP = STATIC_BASE + 2832;
 /* global initializers */  __ATINIT__.push();
 
 
@@ -1739,7 +1739,7 @@ STATICTOP = STATIC_BASE + 2768;
 
 
 
-var STATIC_BUMP = 2768;
+var STATIC_BUMP = 2832;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -1886,11 +1886,15 @@ function copyTempDouble(ptr) {
 
   var _llvm_cos_f64=Math_cos;
 
+  var _llvm_fabs_f64=Math_abs;
+
   var _llvm_floor_f64=Math_floor;
 
    
 
   var _llvm_sin_f64=Math_sin;
+
+  var _llvm_sqrt_f64=Math_sqrt;
 
   
   function _emscripten_memcpy_big(dest, src, num) {
@@ -1976,7 +1980,7 @@ function invoke_iiii(index,a1,a2,a3) {
 
 Module.asmGlobalArg = {};
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "invoke_ii": invoke_ii, "invoke_iiii": invoke_iiii, "___lock": ___lock, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_llvm_cos_f64": _llvm_cos_f64, "_llvm_floor_f64": _llvm_floor_f64, "_llvm_sin_f64": _llvm_sin_f64, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_ii": nullFunc_ii, "nullFunc_iiii": nullFunc_iiii, "invoke_ii": invoke_ii, "invoke_iiii": invoke_iiii, "___lock": ___lock, "___setErrNo": ___setErrNo, "___syscall140": ___syscall140, "___syscall146": ___syscall146, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___unlock": ___unlock, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_llvm_cos_f64": _llvm_cos_f64, "_llvm_fabs_f64": _llvm_fabs_f64, "_llvm_floor_f64": _llvm_floor_f64, "_llvm_sin_f64": _llvm_sin_f64, "_llvm_sqrt_f64": _llvm_sqrt_f64, "flush_NO_FILESYSTEM": flush_NO_FILESYSTEM, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (Module.asmGlobalArg, Module.asmLibraryArg, buffer);
@@ -1999,10 +2003,22 @@ var real__dubins_path_endpoint = asm["_dubins_path_endpoint"]; asm["_dubins_path
   return real__dubins_path_endpoint.apply(null, arguments);
 };
 
+var real__dubins_path_length = asm["_dubins_path_length"]; asm["_dubins_path_length"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__dubins_path_length.apply(null, arguments);
+};
+
 var real__dubins_path_sample = asm["_dubins_path_sample"]; asm["_dubins_path_sample"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real__dubins_path_sample.apply(null, arguments);
+};
+
+var real__dubins_shortest_path = asm["_dubins_shortest_path"]; asm["_dubins_shortest_path"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__dubins_shortest_path.apply(null, arguments);
 };
 
 var real__fflush = asm["_fflush"]; asm["_fflush"] = function() {
@@ -2089,10 +2105,18 @@ var _dubins_path_endpoint = Module["_dubins_path_endpoint"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_dubins_path_endpoint"].apply(null, arguments) };
+var _dubins_path_length = Module["_dubins_path_length"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_dubins_path_length"].apply(null, arguments) };
 var _dubins_path_sample = Module["_dubins_path_sample"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_dubins_path_sample"].apply(null, arguments) };
+var _dubins_shortest_path = Module["_dubins_shortest_path"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_dubins_shortest_path"].apply(null, arguments) };
 var _fflush = Module["_fflush"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2452,7 +2476,7 @@ run();
 
 
 /**
- * javascript API 
+ * Dubins Javascript API 
  */
 
 /**
@@ -2558,7 +2582,7 @@ class DubinsPath {
 * @param rho   - turning radius of the vehicle (forward velocity divided by maximum angular velocity)
 * @return path  - the resultant path
 */
-Module['init'] = function( startPoint , endPoint , rho ){
+Module['shortest_path'] = function( startPoint , endPoint , rho ){
     let _startP = Float64Array.from( startPoint );
     let _endP   = Float64Array.from( endPoint );
 
@@ -2567,8 +2591,8 @@ Module['init'] = function( startPoint , endPoint , rho ){
 
     let path = new DubinsPath()
     
-    let test = Module.ccall('dubins_init','number', ['array','array','number','number'], 
-                            [startHeap, endHeap, rho, path._heap.byteOffset ]);
+    let test = Module.ccall('dubins_shortest_path','number', ['array','array','number','number'], 
+                                                             [startHeap, endHeap, rho, path._heap.byteOffset ]);
 
     return path
 }
@@ -2596,12 +2620,12 @@ Module['sample'] = function( path , t ) {
 }
 
 
-  return DubinsCurve;
+  return Dubins;
 };
 if (typeof exports === 'object' && typeof module === 'object')
-    module.exports = DubinsCurve;
+    module.exports = Dubins;
   else if (typeof define === 'function' && define['amd'])
-    define([], function() { return DubinsCurve; });
+    define([], function() { return Dubins; });
   else if (typeof exports === 'object')
-    exports["DubinsCurve"] = DubinsCurve;
+    exports["Dubins"] = Dubins;
   

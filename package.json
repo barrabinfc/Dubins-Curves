@@ -2,13 +2,9 @@
   "name": "js-dubinscurves",
   "version": "1.0.0",
   "description": "Direct port of DubinsCurve algorithm using webassembly",
-  "directories": {
-    "doc": "docs",
-    "example": "examples",
-    "test": "tests"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp --gulpfile ./build.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/barrabinfc/js-dubinscurves/issues"
   },
-  "homepage": "https://github.com/barrabinfc/js-dubinscurves#readme"
+  "homepage": "https://github.com/barrabinfc/js-dubinscurves#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-exec": "^3.0.2"
+  },
+  "dependencies": {}
 }

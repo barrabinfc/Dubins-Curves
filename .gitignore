@@ -1,5 +1,6 @@
 CMakeFiles
 3rd_party/google-test
+node_modules/
 build
 *.log
 *.tlog

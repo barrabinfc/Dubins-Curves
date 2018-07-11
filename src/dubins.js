@@ -1,5 +1,5 @@
 /**
- * javascript API 
+ * Dubins Javascript API 
  */
 
 /**
@@ -105,7 +105,7 @@ class DubinsPath {
 * @param rho   - turning radius of the vehicle (forward velocity divided by maximum angular velocity)
 * @return path  - the resultant path
 */
-Module['init'] = function( startPoint , endPoint , rho ){
+Module['shortest_path'] = function( startPoint , endPoint , rho ){
     let _startP = Float64Array.from( startPoint );
     let _endP   = Float64Array.from( endPoint );
 
@@ -114,8 +114,8 @@ Module['init'] = function( startPoint , endPoint , rho ){
 
     let path = new DubinsPath()
     
-    let test = Module.ccall('dubins_init','number', ['array','array','number','number'], 
-                            [startHeap, endHeap, rho, path._heap.byteOffset ]);
+    let test = Module.ccall('dubins_shortest_path','number', ['array','array','number','number'], 
+                                                             [startHeap, endHeap, rho, path._heap.byteOffset ]);
 
     return path
 }
