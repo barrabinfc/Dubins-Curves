@@ -34,8 +34,8 @@ Examples
 
 The following code animates `ball` from `[0,0]` with direction `Math.Pi` to point B `[100, 100, -Math.Pi]`, along the shortest path.
 
-.. code-block:: javascript
-    
+.. code-block:: js
+
     let start = null
     let ball = document.querySelector('#ball');
 
