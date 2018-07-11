@@ -1,0 +1,28 @@
+{
+  "name": "js-dubinscurves",
+  "version": "1.0.0",
+  "description": "Direct port of DubinsCurve algorithm using webassembly",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barrabinfc/js-dubinscurves.git"
+  },
+  "keywords": [
+    "webassembly",
+    "animation",
+    "curves"
+  ],
+  "author": "barrabinfc , AndrewWalker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/barrabinfc/js-dubinscurves/issues"
+  },
+  "homepage": "https://github.com/barrabinfc/js-dubinscurves#readme"
+}

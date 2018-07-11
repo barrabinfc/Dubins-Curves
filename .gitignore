@@ -1,3 +1,5 @@
+CMakeFiles
+3rd_party/google-test
 build
 *.log
 *.tlog

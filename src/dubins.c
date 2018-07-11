@@ -22,7 +22,9 @@
 #ifdef WIN32
 #define _USE_MATH_DEFINES
 #endif
+
 #include <math.h>
+#include <emscripten.h>
 #include "dubins.h"
 
 #define EPSILON (10e-10)
