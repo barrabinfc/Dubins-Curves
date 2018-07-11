@@ -1,16 +1,18 @@
-dist: trusty
-sudo: false
-language: cpp
+notifications:
+  email: false
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-5
+language: node_js
+node_js:
+  - node
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
 
 script:
-  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE . 
-  - cmake --build . 
-  - ctest 
-  - bash <(curl -s https://codecov.io/bash) -x /usr/bin/gcov-5
+  - docker exec -it npm run build
+  - npm run test
