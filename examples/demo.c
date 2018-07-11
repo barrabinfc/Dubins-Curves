@@ -17,37 +17,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 #include "dubins.h"
 #include <stdio.h>
-#include <math.h>
-#include <assert.h>
 
-char* names[] = {
-    "LSL",
-    "LSR",
-    "RSL",
-    "RSR",
-    "RLR",
-    "LRL",
-};
+int printConfiguration(double q[3], double x, void* user_data) {
+    printf("%f,%f,%f,%f\n", q[0], q[1], q[2], x);
+    return 0;
+}
 
 int main()
 {
-    double q0[3];
-    double q1[3];
-    double turning_radius;
+    double q0[] = { 0,0,0 };
+    double q1[] = { 4,4,3.142 };
+    DubinsPath path;
+    dubins_shortest_path(&path, q0, q1, 1.0);
 
-    while(scanf("%lf %lf %lf %lf %lf %lf %lf", 
-                &q0[0], &q0[1], &q0[2], 
-                &q1[0], &q1[1], &q1[2], 
-                &turning_radius) != EOF) 
-    {
-        /* display information about the best path */
-        DubinsPath path;
-        int err = dubins_init(q0, q1, turning_radius, &path);
-        assert(err == 0);
-        printf("# best = %d = %s\n", path.type, names[path.type]);
-    }
+    printf("#x,y,theta,t\n");
+    dubins_path_sample_many(&path,  0.1, printConfiguration, NULL);
+
     return 0;
 }
