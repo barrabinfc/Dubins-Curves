@@ -2,6 +2,10 @@
   "name": "js-dubinscurves",
   "version": "1.0.0",
   "description": "Direct port of DubinsCurve algorithm using webassembly",
+  "main": "./dist/dubins.js",
+  "publishConfig": {
+    "access": "restricted"
+  },  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "gulp --gulpfile ./build.js"
