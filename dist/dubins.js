@@ -1247,7 +1247,7 @@ function addOnPostRun(cb) {
 // a maximum length limit of how many bytes it is allowed to write. Prefer calling the
 // function stringToUTF8Array() instead, which takes in a maximum length that can be used
 // to be secure from out of bounds writes.
-/** @deprecated */
+/** @deprecated **/
 function writeStringToMemory(string, buffer, dontAddNull) {
   warnOnce('writeStringToMemory is deprecated and should not be called! Use stringToUTF8() instead!');
 
@@ -1262,6 +1262,7 @@ function writeStringToMemory(string, buffer, dontAddNull) {
   stringToUTF8(string, buffer, Infinity);
   if (dontAddNull) HEAP8[end] = lastChar; // Restore the value under the null character.
 }
+
 
 function writeArrayToMemory(array, buffer) {
   assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
