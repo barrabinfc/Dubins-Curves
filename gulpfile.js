@@ -19,7 +19,7 @@ gulp.task('build', (cb) => {
 
 gulp.task('compress', (cb) => {
     return gulp.src('dist/dubins.js')
-                .pipe(babel())
+                .pipe(babel({presets: ["@babel/preset-env",'minify']}))
                 .pipe(rename({ suffix: '.min' }))
                 .pipe(gulp.dest('dist/'))
 });
