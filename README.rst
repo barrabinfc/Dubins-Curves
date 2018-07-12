@@ -12,7 +12,7 @@ are described in section 15.3.1 `"Dubins Curves"
 <http://planning.cs.uiuc.edu/node821.html>`_ of the book "Planning Algorithms"
 [LaValle06]_.
 
-`Demo <http://barrabinfc.github.io/js-dubinscurves/demo.html>`
+`Demo <http://barrabinfc.github.io/js-dubinscurves/demo.html>`_
 
 The approach used to find paths is based on the algebraic solutions published
 in [Shkel01]_. However, rather than using angular symmetries to improve
