@@ -58,8 +58,8 @@
 let ball = document.querySelector('#ball');
 
 /* Arguments: [x0,y1,angle0], [x1,y1,angle1], radius */
-let path = DubinsAPI.init( [0,   0,    Math.Pi], 
-                           [200, 200, -Math.Pi], 128 );
+let path = DubinsAPI.shortest_path( [0,   0,    Math.Pi], 
+                                    [200, 200, -Math.Pi], 128 );
 
 /*
  * Interpolate from 0 to path.length
@@ -118,8 +118,8 @@ requestAnimationFrame(animate)
 
         function setup( destiny ) {
             console.log(`from: ${ballCoords} to ${destiny.x}, ${destiny.y}`)
-            animPath = DubinsAPI.init( ballCoords, 
-                                       [destiny.x, destiny.y, 0], 160 )
+            animPath = DubinsAPI.shortest_path( ballCoords, 
+                                                [destiny.x, destiny.y, 0], 160 )
             animLength = animPath.length;
 
             var coords = {t: 0.0}
@@ -148,7 +148,7 @@ requestAnimationFrame(animate)
 
         document.addEventListener('DOMContentLoaded', function preload() {
             /** Preload wasm */
-            DubinsCurve({ 'locateFile': (f) => (f == 'dubins.wasm' ? DUBINS_WASM_FILE : f) })
+            Dubins({ 'locateFile': (f) => (f == 'dubins.wasm' ? DUBINS_WASM_FILE : f) })
                 .then((Module) => {
                     global('DubinsAPI', Module)
                     console.info("🙌 Loaded Dubins Wasm successfully. Stored as window.DubinsAPI")

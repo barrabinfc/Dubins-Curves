@@ -7,7 +7,7 @@ let babel = require('gulp-babel');
 let wasm_config = require('./wasm.config.js');
 
 gulp.task('build', (cb) => {
-    let cmd = `emcc ${wasm_config.flags.join(' ')}  ${wasm_config.inputfile} -o ${wasm_config.outputfile}`
+    let cmd = `emcc ${wasm_config.flags.join(' ')} ${wasm_config.inputfile} -o ${wasm_config.outputfile}`
     exec(cmd, (err, stdout, stderr) => {
         if (err) {
             console.error('❌\tCompilation Failed. Did you activated emsdk environment?\n');

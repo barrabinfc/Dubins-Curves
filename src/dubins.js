@@ -95,8 +95,8 @@ class DubinsPath {
     get length() {
         return Module['path_length'](this)
     }
-
 }
+Module['DubinsPath'] = DubinsPath
 
 /*
 * @param startPoint    - a configuration specified as an array of x, y, theta
@@ -113,10 +113,11 @@ Module['shortest_path'] = function (startPoint, endPoint, rho) {
 
     let path = new DubinsPath()
 
-    let test = Module.ccall('dubins_shortest_path', 'number', ['array', 'array', 'number', 'number'],
+    let ret = Module.ccall('dubins_shortest_path', 'number', ['array', 'array', 'number', 'number'],
         [startHeap, endHeap, rho, path._heap.byteOffset]);
-
-    return path
+    
+    if(ret === EDUBOK) return path;
+    else               return ret;
 }
 
 Module['path_length'] = function (path) {
