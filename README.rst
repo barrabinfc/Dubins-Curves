@@ -2,6 +2,8 @@
 Dubins-Curves
 =============
 
+|build_status| |license|
+
 About
 =====
 
@@ -17,8 +19,6 @@ are described in section 15.3.1 `"Dubins Curves"
 The approach used to find paths is based on the algebraic solutions published
 in [Shkel01]_. However, rather than using angular symmetries to improve
 performance, the simpler approach to test all possible solutions is used here. 
-
-|build_status| |license|
 
 Usage
 =====
