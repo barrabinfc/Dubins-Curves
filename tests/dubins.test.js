@@ -28,9 +28,9 @@ describe('Dubins JS Wrapper', () => {
     })
     test('Sampling path', () => {
         let path = dubins.shortest_path([0,0,0], [10,10,Math.PI], 50);
-        for(var i=0; i < path.length; i += 0.25){
-            console.log(dubins.sample(path, i));
-        }
+        //for(var i=0; i < path.length; i += 0.25){
+        console.log(dubins.sample(path, 0));
+        //}
         expect(true).toBe(true);
     })
 })

@@ -113,8 +113,8 @@ Module['shortest_path'] = function (startPoint, endPoint, rho) {
 
     let path = new DubinsPath()
 
-    let ret = Module.ccall('dubins_shortest_path', 'number', ['array', 'array', 'number', 'number'],
-        [startHeap, endHeap, rho, path._heap.byteOffset]);
+    let ret = Module.ccall('dubins_shortest_path', 'number', ['number', 'array', 'array', 'number'],
+        [path._heap.byteOffset, startHeap, endHeap, rho]);
     
     if(ret === EDUBOK) return path;
     else               return ret;
@@ -134,7 +134,7 @@ Module['sample'] = function (path, t) {
     /* Allocate, call, read back and free memory */
     let sampleHeap = _arrayToHeap(Float64Array.from([0, 0, 0]))
     let res = Module.ccall('dubins_path_sample', 'number', ['number', 'number', 'number'],
-        [path._heap.byteOffset, t, sampleHeap.byteOffset])
+                            [path._heap.byteOffset, t, sampleHeap.byteOffset])
 
     let what = new Float64Array(sampleHeap.buffer, sampleHeap.byteOffset, 3)
     _freeArray(sampleHeap)

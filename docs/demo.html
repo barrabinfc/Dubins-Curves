@@ -121,6 +121,7 @@ requestAnimationFrame(animate)
             animPath = DubinsAPI.shortest_path( ballCoords, 
                                                 [destiny.x, destiny.y, 0], 160 )
             animLength = animPath.length;
+            console.log("pathLength: ", animLength)
 
             var coords = {t: 0.0}
             tween = new TWEEN.Tween(coords)

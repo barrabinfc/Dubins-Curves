@@ -1730,7 +1730,7 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 2832;
+STATICTOP = STATIC_BASE + 5712;
 /* global initializers */  __ATINIT__.push();
 
 
@@ -1739,7 +1739,7 @@ STATICTOP = STATIC_BASE + 2832;
 
 
 
-var STATIC_BUMP = 2832;
+var STATIC_BUMP = 5712;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -1883,6 +1883,8 @@ function copyTempDouble(ptr) {
   }
 
   function ___unlock() {}
+
+   
 
   var _llvm_cos_f64=Math_cos;
 
@@ -2033,6 +2035,12 @@ var real__free = asm["_free"]; asm["_free"] = function() {
   return real__free.apply(null, arguments);
 };
 
+var real__llvm_bswap_i32 = asm["_llvm_bswap_i32"]; asm["_llvm_bswap_i32"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__llvm_bswap_i32.apply(null, arguments);
+};
+
 var real__llvm_minnum_f64 = asm["_llvm_minnum_f64"]; asm["_llvm_minnum_f64"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2125,6 +2133,10 @@ var _free = Module["_free"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_free"].apply(null, arguments) };
+var _llvm_bswap_i32 = Module["_llvm_bswap_i32"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_llvm_bswap_i32"].apply(null, arguments) };
 var _llvm_minnum_f64 = Module["_llvm_minnum_f64"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2590,8 +2602,8 @@ Module['shortest_path'] = function (startPoint, endPoint, rho) {
 
     let path = new DubinsPath()
 
-    let ret = Module.ccall('dubins_shortest_path', 'number', ['array', 'array', 'number', 'number'],
-        [startHeap, endHeap, rho, path._heap.byteOffset]);
+    let ret = Module.ccall('dubins_shortest_path', 'number', ['number', 'array', 'array', 'number'],
+        [path._heap.byteOffset, startHeap, endHeap, rho]);
     
     if(ret === EDUBOK) return path;
     else               return ret;
@@ -2611,7 +2623,7 @@ Module['sample'] = function (path, t) {
     /* Allocate, call, read back and free memory */
     let sampleHeap = _arrayToHeap(Float64Array.from([0, 0, 0]))
     let res = Module.ccall('dubins_path_sample', 'number', ['number', 'number', 'number'],
-        [path._heap.byteOffset, t, sampleHeap.byteOffset])
+                            [path._heap.byteOffset, t, sampleHeap.byteOffset])
 
     let what = new Float64Array(sampleHeap.buffer, sampleHeap.byteOffset, 3)
     _freeArray(sampleHeap)
