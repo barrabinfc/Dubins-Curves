@@ -121,12 +121,12 @@ requestAnimationFrame(animate)
             animPath = DubinsAPI.shortest_path( ballCoords, 
                                                 [destiny.x, destiny.y, 0], 160 )
             animLength = animPath.length;
-            console.log("pathLength: ", animLength)
 
             var coords = {t: 0.0}
+            if(tween) tween.stop()
             tween = new TWEEN.Tween(coords)
                             .easing(TWEEN.Easing.Cubic.InOut)
-                            .to({t: animLength-0.01}, 3500)
+                            .to({t: animLength-0.1}, 3500)
                             .onComplete( () => { tween.stop() })
                             .onUpdate( function(){
                 var [mx,my, angle] = DubinsAPI.sample( animPath, coords.t)
